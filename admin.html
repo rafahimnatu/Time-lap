@@ -24,7 +24,7 @@
         .form-group label { display:block; margin-bottom:5px; font-weight:bold; color:#4a4a4a; }
         .form-group input, .form-group textarea { width:100%; padding:10px; border:2px solid #ddd; border-radius:10px; }
         .form-group textarea { height:100px; }
-        .save-btn { background:linear-gradient(45deg,#00b09b,#96c93d); color:white; border:none; padding:15px 30px; border-radius:30px; font-weight:bold; cursor:pointer; width:100%; }
+        .save-btn { background:linear-gradient(45deg,#00b09b,#96c93d); color:white; border:none; padding:15px 30px; border-radius:30px; font-weight:bold; cursor:pointer; width:100%; margin-top:20px; }
         .message { text-align:center; margin-top:20px; font-weight:bold; }
     </style>
 </head>
@@ -44,16 +44,21 @@
             </div>
             <div id="adminPanel" style="display:none;">
                 <div class="tab-buttons">
-                    <button class="tab-btn active" onclick="showTab('texts')">Texts</button>
+                    <button class="tab-btn active" onclick="showTab('countdown')">Countdown</button>
+                    <button class="tab-btn" onclick="showTab('texts')">Texts</button>
                     <button class="tab-btn" onclick="showTab('photos')">Photos</button>
                     <button class="tab-btn" onclick="showTab('reasons')">Reasons</button>
                     <button class="tab-btn" onclick="showTab('videos')">Videos</button>
                     <button class="tab-btn" onclick="showTab('social')">Social</button>
                 </div>
                 
-                <div id="textsTab" class="tab-pane active">
+                <div id="countdownTab" class="tab-pane active">
+                    <h3>Countdown Settings</h3>
+                    <div id="countdownForm"></div>
+                </div>
+                
+                <div id="textsTab" class="tab-pane">
                     <h3>Text Settings</h3>
-                    <!-- ফর্ম ফিল্ডগুলো JavaScript দিয়ে পূরণ হবে -->
                     <div id="textsForm"></div>
                 </div>
                 
@@ -117,6 +122,26 @@
 
         function renderForms() {
             if (!currentConfig) return;
+
+            // Countdown Form
+            document.getElementById('countdownForm').innerHTML = `
+                <div class="form-group">
+                    <label>Month (0=January, 1=February, etc):</label>
+                    <input type="number" id="countdown_month" value="${currentConfig.countdown.month}">
+                </div>
+                <div class="form-group">
+                    <label>Day:</label>
+                    <input type="number" id="countdown_day" value="${currentConfig.countdown.day}">
+                </div>
+                <div class="form-group">
+                    <label>Message:</label>
+                    <input type="text" id="countdown_message" value="${currentConfig.countdown.message}">
+                </div>
+                <div class="form-group">
+                    <label>Age (candles count):</label>
+                    <input type="number" id="countdown_age" value="${currentConfig.countdown.age}">
+                </div>
+            `;
 
             // Texts Form
             let textsHtml = '';
@@ -216,6 +241,12 @@
         function saveConfig() {
             if (!currentConfig) return;
 
+            // Countdown
+            currentConfig.countdown.month = parseInt(document.getElementById('countdown_month').value);
+            currentConfig.countdown.day = parseInt(document.getElementById('countdown_day').value);
+            currentConfig.countdown.message = document.getElementById('countdown_message').value;
+            currentConfig.countdown.age = parseInt(document.getElementById('countdown_age').value);
+
             // Texts
             for (const key in currentConfig.texts) {
                 const input = document.getElementById(`text_${key}`);
@@ -248,10 +279,10 @@
             currentConfig.social.facebook = document.getElementById('social_facebook').value;
             currentConfig.social.instagram = document.getElementById('social_instagram').value;
 
-            // Save to localStorage (Netlify-এ JSON ফাইল আপডেট করা যায় না)
+            // Save to localStorage (demo purpose)
             localStorage.setItem('birthdayConfig', JSON.stringify(currentConfig));
             
-            document.getElementById('saveMessage').innerHTML = '✅ Config saved to browser! Deploy to update site.';
+            document.getElementById('saveMessage').innerHTML = '✅ Config saved to browser! To make it live, update config.json on server.';
             document.getElementById('saveMessage').style.color = 'green';
         }
     </script>

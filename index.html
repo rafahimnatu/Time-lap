@@ -814,7 +814,7 @@ function confetti(options) { if (typeof window.confetti === 'function') window.c
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
-window.addEventListener('beforeunload', function() { stopMicrophone(); countdownAudio.pause(); birthdayAudio.pause(); if (resetTimer) clearTimeout(resetTimer); }); });
+window.addEventListener('beforeunload', function() { stopMicrophone(); countdownAudio.pause(); birthdayAudio.pause(); if (resetTimer) clearTimeout(resetTimer); });
 </script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
 </body>
